@@ -1,6 +1,7 @@
 var res = {
     vertical_png : "res/vertical.png",
-    horizontal_png : "res/horizontal.png"
+    horizontal_png : "res/horizontal.png",
+    circle_png: "res/circle.png"
 };
 
 var g_resources = [];
