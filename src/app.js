@@ -57,8 +57,8 @@ var PongGameLayer = cc.Layer.extend({
                     // cc.log("position: " + position.y);
                     // cc.log("content_size: " + content_size.height);
                     // cc.log("bounding_box: " + bounding_box.height);
-                    var dest_top = (size.height - (content_size.height / 2)) - sprite_top.getContentSize().height;
-                    var dest_bottom = (content_size.height / 2) + sprite_top.getContentSize().height;
+                    var dest_top = (size.height - (content_size.height / 2)) - sprite_top.getContentSize().height - 6;
+                    var dest_bottom = (content_size.height / 2) + sprite_top.getContentSize().height + 6;
                     // cc.log("dest_top: " + dest_top);
                     // cc.log("dest_bottom: " + dest_bottom);
                     if (key == 75) { // key up char 'K'
@@ -90,8 +90,7 @@ var PongGameLayer = cc.Layer.extend({
     }
 });
 
-var WALLS_WIDTH = 20;
-var X_WALLS_WIDTH = 20;
+var X_WALLS_WIDTH = 1;
 var Y_WALLS_WIDTH = 1;
 var WALLS_ELASTICITY = 1; //0.5;
 var WALLS_FRICTION = 1;
@@ -101,6 +100,9 @@ var bottomWall;
 var winSize;
 var space;
 var phBody;
+
+var sprite_left_body;
+var sprite_right_body;
 
 var PongGameScene = cc.Scene.extend({
     onEnter:function () {
@@ -112,6 +114,7 @@ var PongGameScene = cc.Scene.extend({
         this.initPhysics();
         this.addWallsAndGround();
         this.addPhysicsCircle();
+        this.addStaticObject();
 
         this.scheduleUpdate();
     },
@@ -144,6 +147,37 @@ var PongGameScene = cc.Scene.extend({
         upperWall.setElasticity(WALLS_ELASTICITY);
         upperWall.setFriction(WALLS_FRICTION);
         space.addStaticShape(upperWall);
+    },
+
+    addStaticObject:function () {
+
+        sprite_left_body = new cp.Body(Infinity, Infinity);
+        sprite_left_body.setPos(sprite_left.getPosition());
+        sprite_left_shape = new cp.BoxShape(sprite_left_body, sprite_left.getContentSize().width, sprite_left.getContentSize().height);
+	    sprite_left_shape.setElasticity(1);
+        sprite_left_shape.setFriction(1);
+        space.addShape(sprite_left_shape);
+
+        sprite_right_body = new cp.Body(Infinity, Infinity);
+        sprite_right_body.setPos(sprite_right.getPosition());
+        sprite_right_shape = new cp.BoxShape(sprite_right_body, sprite_right.getContentSize().width, sprite_right.getContentSize().height);
+	    sprite_right_shape.setElasticity(1);
+        sprite_right_shape.setFriction(1);
+        space.addShape(sprite_right_shape);
+
+        sprite_top_body = new cp.Body(Infinity, Infinity);
+        sprite_top_body.setPos(sprite_top.getPosition());
+        sprite_top_shape = new cp.BoxShape(sprite_top_body, sprite_top.getContentSize().width, sprite_top.getContentSize().height);
+	    sprite_top_shape.setElasticity(1);
+        sprite_top_shape.setFriction(1);
+        space.addShape(sprite_top_shape);
+
+        sprite_bottom_body = new cp.Body(Infinity, Infinity);
+        sprite_bottom_body.setPos(sprite_bottom.getPosition());
+        sprite_bottom_shape = new cp.BoxShape(sprite_bottom_body, sprite_bottom.getContentSize().width, sprite_bottom.getContentSize().height);
+	    sprite_bottom_shape.setElasticity(1);
+        sprite_bottom_shape.setFriction(1);
+        space.addShape(sprite_bottom_shape);
     },
 
     addPhysicsCircle:function() {
@@ -184,6 +218,9 @@ var PongGameScene = cc.Scene.extend({
 
     update:function() { // execute 60 times per second (60 fps)
         space.step(1/60); 
+
+        sprite_left_body.setPos(sprite_left.getPosition());
+        sprite_right_body.setPos(sprite_right.getPosition());
     }
 });
 
